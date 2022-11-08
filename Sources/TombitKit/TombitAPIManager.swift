@@ -8,76 +8,19 @@
 import UIKit
 import SwiftJWT
 
-typealias BinanceMarketAssetInfoResponse = MarketAssetInfoList
-typealias BinanceFutureAssetInfoResponse = FutureAccountInfo
-typealias BinancePriceTickerInfoResponse = PriceTickerInfoList
-typealias BinancePriceTickerInfo = PriceTickerInfo
-
-public struct APIDataResponse<Decodable, Failure: Error> : Equatable {
-  public static func == (lhs: APIDataResponse<Decodable, Failure>, rhs: APIDataResponse<Decodable, Failure>) -> Bool {
-    lhs.id == rhs.id
-  }
+public final class TombitAPIManager {
+  public static let shared = TombitAPIManager()
   
-  let id = UUID()
+  public var binanceApiAccessKey: String?
+  public var binanceApiSecretKey: String?
   
-  public var result: Result<Decodable, Failure>?
-  
-  init(_ result: Result<Decodable, Failure>) {
-    self.result = result
-  }
-}
-
-// Binance Asset Info
-typealias BinanceAssetInfoTupleAPIDataResponse = (market: BinanceMarketAssetInfoApiDataResponse?, future: BinanceFutureAssetInfoApiDataResponse?)
-typealias BinanceMarketAssetInfoApiDataResponse = APIDataResponse<BinanceMarketAssetInfoResponse, APIError>
-typealias BinanceFutureAssetInfoApiDataResponse = APIDataResponse<BinanceFutureAssetInfoResponse, APIError>
-// Binance Price Info
-typealias BinancePriceInfoTupleAPIDataResponse = (market: PriceTickerInfoList?, future: PriceTickerInfoList?)
-typealias BinanceMarketPriceInfoApiDataResponse = APIDataResponse<BinancePriceTickerInfoResponse, APIError>
-typealias BinanceFuturePriceInfoApiDataResponse = APIDataResponse<BinancePriceTickerInfoResponse, APIError>
-
-struct BinancePriceInfoWrapper: Equatable {
-  var marketInfo: BinancePriceTickerInfoResponse?
-  var futureInfo: BinancePriceTickerInfoResponse?
-}
-
-struct BinanceAssetInfoWrapper: Equatable {
-  var marketInfo: BinanceMarketAssetInfoResponse?
-  var futureInfo: BinanceFutureAssetInfoResponse?
-}
-
-typealias UpbitAccountsListResponse = [UpbitAccountsResponse]
-
-struct UpbitAccountsResponse: Codable, Equatable, Identifiable {
-  var id = UUID()
-  var currency: String
-  var balance: String
-  var locked: String
-  var avgBuyPrice: String
-  var avgBuyPriceModified: Bool
-  var unitCurrency: String
-  
-  enum CodingKeys: String, CodingKey {
-    case currency, balance, locked
-    case avgBuyPrice = "avg_buy_price"
-    case avgBuyPriceModified = "avg_buy_price_modified"
-    case unitCurrency = "unit_currency"
-  }
-}
-
-final class TombitAPIManager {
-  static let shared = TombitAPIManager()
-  
-  var binanceApiAccessKey: String?
-  var binanceApiSecretKey: String?
-
   // MARK: - Binance
-
-  func requestBinanceAssetList(apiAccessKey: String, apiSecretKey: String) async -> BinanceAssetInfoTupleAPIDataResponse {
+  
+  public func requestBinanceAssetList(apiAccessKey: String, apiSecretKey: String) async -> BinanceAssetInfoTupleAPIDataResponse {
     binanceApiAccessKey = apiAccessKey
     binanceApiSecretKey = apiSecretKey
     debugPrint("\(apiAccessKey), \(apiSecretKey)")
-
+    
     let connection = BinanceConnection(apiKey: apiAccessKey, secretKey: apiSecretKey)
     var tupleResponse: BinanceAssetInfoTupleAPIDataResponse = (market: nil, future: nil)
     
@@ -89,12 +32,12 @@ final class TombitAPIManager {
     return tupleResponse
   }
   
-  func requestBinancePriceList() async throws -> Result<BinancePriceInfoTupleAPIDataResponse?, APIError> {
+  public func requestBinancePriceList() async throws -> Result<BinancePriceInfoTupleAPIDataResponse?, APIError> {
     let connection = BinanceConnection(
       apiKey: binanceApiAccessKey ?? "",
       secretKey: binanceApiSecretKey ?? ""
     )
-
+    
     var tupleResponse: BinancePriceInfoTupleAPIDataResponse = (market: nil, future: nil)
     
     // 현물 가격 조회
@@ -120,7 +63,7 @@ final class TombitAPIManager {
   
   // MARK: Upbit
   
-  func requestUpbitAccountsInfo(apiAccessKey: String, apiSecretKey: String) async -> UpbitAccountsListResponse? {
+  public func requestUpbitAccountsInfo(apiAccessKey: String, apiSecretKey: String) async -> UpbitAccountsListResponse? {
     let baseURL = "https://api.upbit.com/v1/accounts"
     
     var jwt = JWT(
@@ -131,7 +74,7 @@ final class TombitAPIManager {
         query_hash_alg: "SHA512"
       )
     )
-
+    
     guard
       let secretKeyData = apiSecretKey.data(using: .utf8),
       let signedJWT = try? jwt.sign(using: .hs256(key: secretKeyData)),

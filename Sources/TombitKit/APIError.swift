@@ -17,7 +17,7 @@ public enum APIError: Error, Equatable {
   case noError
   case noData
   
-  func errorDescription() -> String? {
+  public func errorDescription() -> String? {
     switch self {
     case .failedToParseJson:
       return "데이터 처리에 실패했습니다."

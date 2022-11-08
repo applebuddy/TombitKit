@@ -3,7 +3,6 @@ import Foundation
 
 public typealias MarketAssetInfoList = [MarketAssetInfo]
 public typealias PriceTickerInfoList = [PriceTickerInfo]
-public typealias SymbolPriceTicker = BinanceResponse.SymbolPriceTicker
 
 public final class BinanceConnection {
   enum APIType {
