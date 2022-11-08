@@ -8,6 +8,7 @@
 import Foundation
 import SwiftJWT
 
+/// payload for API with apiKey
 struct UpbitAPIPayload: Claims {
   let access_key: String
   let nonce: String
@@ -15,7 +16,7 @@ struct UpbitAPIPayload: Claims {
   let query_hash_alg: String
 }
 
-enum ApiType: CaseIterable {
+enum APIType: CaseIterable {
   case upbit
   case binance
   

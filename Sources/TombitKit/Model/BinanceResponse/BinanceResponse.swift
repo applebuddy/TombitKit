@@ -89,7 +89,6 @@ public struct FutureAssetInfo: Codable, Equatable {
 }
 
 public enum BinanceResponse {
-  
   enum APIError: Error {
     case decodingError
   }

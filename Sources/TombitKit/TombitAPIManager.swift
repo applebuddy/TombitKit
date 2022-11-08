@@ -1,5 +1,5 @@
 //
-//  GlobalApiManager.swift
+//  TombitAPIManager.swift
 //  Tombit
 //
 //  Created by MinKyeongTae on 2022/09/09.
@@ -24,8 +24,8 @@ public final class TombitAPIManager {
     let connection = BinanceConnection(apiKey: apiAccessKey, secretKey: apiSecretKey)
     var tupleResponse: BinanceAssetInfoTupleAPIDataResponse = (market: nil, future: nil)
     
-    async let marketInfoResult = await connection.getMarketAssetListInfo()
-    async let futureInfoResult = await connection.getFutureAccountInfo()
+    async let marketInfoResult = connection.getMarketAssetListInfo()
+    async let futureInfoResult = connection.getFutureAccountInfo()
     
     tupleResponse.market = APIDataResponse(await marketInfoResult)
     tupleResponse.future = APIDataResponse(await futureInfoResult)
@@ -39,10 +39,8 @@ public final class TombitAPIManager {
     )
     
     var tupleResponse: BinancePriceInfoTupleAPIDataResponse = (market: nil, future: nil)
-    
-    // 현물 가격 조회
+
     async let marketResult = connection.getMarketPriceListInfo()
-    // 선물 가격 조회
     async let futureResult = connection.getFuturePriceListInfo()
     
     switch await marketResult {
@@ -61,7 +59,7 @@ public final class TombitAPIManager {
     return .success(tupleResponse)
   }
   
-  // MARK: Upbit
+  // MARK: - Upbit
   
   public func requestUpbitAccountsInfo(apiAccessKey: String, apiSecretKey: String) async -> UpbitAccountsListResponse? {
     let baseURL = "https://api.upbit.com/v1/accounts"
