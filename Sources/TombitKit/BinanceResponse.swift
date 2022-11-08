@@ -1,5 +1,40 @@
 import Foundation
 
+// Binance Asset Info
+public typealias BinanceMarketAssetInfoResponse = MarketAssetInfoList
+public typealias BinanceFutureAssetInfoResponse = FutureAccountInfo
+public typealias BinanceMarketAssetInfoApiDataResponse = APIDataResponse<BinanceMarketAssetInfoResponse, APIError>
+public typealias BinanceFutureAssetInfoApiDataResponse = APIDataResponse<BinanceFutureAssetInfoResponse, APIError>
+public typealias BinanceAssetInfoTupleAPIDataResponse = (market: BinanceMarketAssetInfoApiDataResponse?, future: BinanceFutureAssetInfoApiDataResponse?)
+// Binance Price Info
+public typealias BinancePriceTickerInfoResponse = PriceTickerInfoList
+public typealias BinancePriceTickerInfo = PriceTickerInfo
+public typealias BinancePriceInfoTupleAPIDataResponse = (market: PriceTickerInfoList?, future: PriceTickerInfoList?)
+public typealias BinanceMarketPriceInfoApiDataResponse = APIDataResponse<BinancePriceTickerInfoResponse, APIError>
+public typealias BinanceFuturePriceInfoApiDataResponse = APIDataResponse<BinancePriceTickerInfoResponse, APIError>
+
+public struct BinancePriceInfoWrapper: Equatable {
+  public var marketInfo: BinancePriceTickerInfoResponse?
+  public var futureInfo: BinancePriceTickerInfoResponse?
+  
+  public init(marketInfo: BinancePriceTickerInfoResponse?, futureInfo: BinancePriceTickerInfoResponse?) {
+    self.marketInfo = marketInfo
+    self.futureInfo = futureInfo
+  }
+}
+
+public struct BinanceAssetInfoWrapper: Equatable {
+  public var marketInfo: BinanceMarketAssetInfoResponse?
+  public var futureInfo: BinanceFutureAssetInfoResponse?
+  
+  public init(marketInfo: BinanceMarketAssetInfoResponse?, futureInfo: BinanceFutureAssetInfoResponse?) {
+    self.marketInfo = marketInfo
+    self.futureInfo = futureInfo
+  }
+  
+  public init() {}
+}
+
 public struct PriceTickerInfo: Codable, Equatable {
   public let symbol: String // ex) "BTCUSDT"
   public let price: String // ex) "6000.01"
