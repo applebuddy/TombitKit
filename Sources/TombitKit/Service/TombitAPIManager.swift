@@ -12,13 +12,30 @@ public final class TombitAPIManager {
   public static let shared = TombitAPIManager()
   public var binanceApiAccessKey: String?
   public var binanceApiSecretKey: String?
+  private let upbitBaseURLString = "https://api.upbit.com/v1"
 }
 
 extension TombitAPIManager {
   // MARK: - Upbit
   
+  public func requestUpbitTickerPriceInfo(marketsSubPath: String) async -> Result<UpbitMarketTickerListResponse, APIError> {
+    guard let url = URL(string: "\(upbitBaseURLString)/ticker?markets=\(marketsSubPath)") else {
+      return .failure(APIError.normal(URLError(.badURL)))
+    }
+    
+    var request = URLRequest(url: url)
+    request.httpMethod = "GET"
+    do {
+      let (data, _) = try await URLSession.shared.data(for: request)
+      let response = try JSONDecoder().decode(UpbitMarketTickerListResponse.self, from: data)
+      return .success(response)
+    } catch {
+      return .failure(APIError.normal(error))
+    }
+  }
+
   public func requestUpbitAccountsInfo(apiAccessKey: String, apiSecretKey: String) async throws -> UpbitAccountsListResponse? {
-    let baseURL = "https://api.upbit.com/v1/accounts"
+    let baseURL = "\(upbitBaseURLString)/accounts"
     
     var jwt = JWT(
       claims: UpbitAPIPayload(

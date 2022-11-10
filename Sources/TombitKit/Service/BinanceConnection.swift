@@ -80,7 +80,10 @@ final class BinanceConnection {
     securityType: PayloadBuilder.SecurityType
   ) async -> Result<T, APIError> {
     let payload = PayloadBuilder(payload: queryString, timestamp: timestamp, security: securityType).build()
-    let url = URL(string: "\(apiType.baseURLString)\(path)?\(payload)")!
+    guard let url = URL(string: "\(apiType.baseURLString)\(path)?\(payload)") else {
+      return .failure(APIError.normal(URLError(.badURL)))
+    }
+
     var urlRequest = URLRequest(url: url)
     urlRequest.addValue(apiKey, forHTTPHeaderField: "X-MBX-APIKEY")
     
