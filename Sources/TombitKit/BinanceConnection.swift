@@ -1,10 +1,7 @@
 import CryptoKit
 import Foundation
 
-public typealias MarketAssetInfoList = [MarketAssetInfo]
-public typealias PriceTickerInfoList = [PriceTickerInfo]
-
-public final class BinanceConnection {
+final class BinanceConnection {
   enum APIType {
     case market
     case future
@@ -12,9 +9,9 @@ public final class BinanceConnection {
     var baseURLString: String {
       switch self {
       case .market:
-        return BinanceConnection.MarketEndPoint
+        return BinanceConnection.marketEndPoint
       case .future:
-        return BinanceConnection.FutureEndPoint
+        return BinanceConnection.futureEndPoint
       }
     }
   }
@@ -69,8 +66,8 @@ public final class BinanceConnection {
     case invalidResponse
   }
   
-  static private let MarketEndPoint = "https://api.binance.com"
-  static private let FutureEndPoint = "https://fapi.binance.com"
+  static private let marketEndPoint = "https://api.binance.com"
+  static private let futureEndPoint = "https://fapi.binance.com"
   
   let apiKey: String
   let secretKey: String

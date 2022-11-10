@@ -42,6 +42,9 @@ public struct PriceTickerInfo: Codable, Equatable {
   public let time: Int?
 }
 
+public typealias MarketAssetInfoList = [MarketAssetInfo]
+public typealias PriceTickerInfoList = [PriceTickerInfo]
+
 public struct MarketAssetInfo: Codable, Equatable {
   public let coin: String
   public let depositAllEnable: Bool
