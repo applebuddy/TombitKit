@@ -60,12 +60,7 @@ final class BinanceConnection {
       return "\(built)&signature=\(Data(signature).map { String(format: "%02hhx", $0) }.joined())"
     }
   }
-  
-  public enum BinanceError: Error {
-    
-    case invalidResponse
-  }
-  
+
   static private let marketEndPoint = "https://api.binance.com"
   static private let futureEndPoint = "https://fapi.binance.com"
   
@@ -99,10 +94,10 @@ final class BinanceConnection {
     }
   }
   
-  // MARK: - Market
+  // MARK: - Market API
 
-  /// 현물 자산 리스트 정보
-  public func getMarketAssetListInfo() async -> Result<MarketAssetInfoList, APIError> {
+  /// Market asset list information
+  public func getMarketAssetInfoList() async -> Result<MarketAssetInfoList, APIError> {
     return await performCall(
       withPath: "/sapi/v1/capital/config/getall",
       queryString: "",
@@ -112,8 +107,8 @@ final class BinanceConnection {
     )
   }
 
-  /// 현물 가격 리스트 정보
-  public func getMarketPriceListInfo() async -> Result<PriceTickerInfoList, APIError> {
+  /// Market price list information
+  public func getMarketPriceInfoList() async -> Result<PriceTickerInfoList, APIError> {
     return await performCall(
       withPath: "/api/v3/ticker/price",
       queryString: "",
@@ -123,8 +118,8 @@ final class BinanceConnection {
     )
   }
 
-  /// 선물 가격 리스트 정보
-  public func getFuturePriceListInfo() async -> Result<PriceTickerInfoList, APIError> {
+  /// Future price list information
+  public func getFuturePriceInfoList() async -> Result<PriceTickerInfoList, APIError> {
     return await performCall(
       withPath: "/fapi/v1/ticker/price",
       queryString: "",
@@ -134,9 +129,9 @@ final class BinanceConnection {
     )
   }
   
-  // MARK: - Future
+  // MARK: - Future API
 
-  /// 선물 계정 정보
+  /// Future account information
   public func getFutureAccountInfo() async -> Result<FutureAccountInfo, APIError> {
     return await performCall(
       withPath: "/fapi/v2/account",
