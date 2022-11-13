@@ -1,8 +1,8 @@
 import CryptoKit
 import Foundation
 
-final class BinanceConnection {
-  enum APIType {
+final public class BinanceConnection {
+  public enum APIType {
     case market
     case future
     
@@ -72,6 +72,11 @@ final class BinanceConnection {
     self.secretKey = secretKey
   }
   
+  public init() {
+    self.apiKey = ""
+    self.secretKey = ""
+  }
+  
   private func performCall<T: Decodable>(
     withPath path: String,
     queryString: String,
@@ -80,7 +85,12 @@ final class BinanceConnection {
     securityType: PayloadBuilder.SecurityType
   ) async -> Result<T, APIError> {
     let payload = PayloadBuilder(payload: queryString, timestamp: timestamp, security: securityType).build()
-    guard let url = URL(string: "\(apiType.baseURLString)\(path)?\(payload)") else {
+    var urlString = apiType.baseURLString + "\(path)"
+    if !payload.isEmpty {
+      urlString += "?\(payload)"
+    }
+
+    guard let url = URL(string: urlString) else {
       return .failure(APIError.normal(URLError(.badURL)))
     }
 
@@ -98,6 +108,16 @@ final class BinanceConnection {
   }
   
   // MARK: - Market API
+  
+  /// Market exchange information
+  public func getMarketExchangeInfo() async -> Result<BinanceExchangeInfo, APIError> {
+    return await performCall(
+      withPath: "/api/v1/exchangeInfo",
+      queryString: "",
+      timestamp: false,
+      securityType: .none
+    )
+  }
 
   /// Market asset list information
   public func getMarketAssetInfoList() async -> Result<MarketAssetInfoList, APIError> {
@@ -133,6 +153,17 @@ final class BinanceConnection {
   }
   
   // MARK: - Future API
+  
+  /// Future exchange information
+  public func getFutureExchangeInfo() async -> Result<BinanceExchangeInfo, APIError> {
+    return await performCall(
+      withPath: "/fapi/v1/exchangeInfo",
+      queryString: "",
+      timestamp: false,
+      apiType: .future,
+      securityType: .none
+    )
+  }
 
   /// Future account information
   public func getFutureAccountInfo() async -> Result<FutureAccountInfo, APIError> {

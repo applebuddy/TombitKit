@@ -88,6 +88,16 @@ extension TombitAPIManager {
 extension TombitAPIManager {
   // MARK: - Binance
   
+  public func requestExchangeInfo(apiType: BinanceConnection.APIType) async -> Result<BinanceExchangeInfo, APIError> {
+    let connection = BinanceConnection()
+    switch apiType {
+    case .market:
+      return await connection.getMarketExchangeInfo()
+    case .future:
+      return await connection.getFutureExchangeInfo()
+    }
+  }
+  
   public func requestBinanceAssetList(apiAccessKey: String, apiSecretKey: String) async -> BinanceAssetInfoTupleAPIDataResponse {
     binanceApiAccessKey = apiAccessKey
     binanceApiSecretKey = apiSecretKey
