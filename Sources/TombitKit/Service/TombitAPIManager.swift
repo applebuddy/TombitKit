@@ -18,6 +18,22 @@ public final class TombitAPIManager {
 extension TombitAPIManager {
   // MARK: - Upbit
   
+  public func requestMarketAllInfo() async -> Result<[UpbitSymbolInfo], APIError> {
+    guard let url = URL(string: "\(upbitBaseURLString)/market/all") else {
+      return .failure(APIError.normal(URLError(.badURL)))
+    }
+    
+    var request = URLRequest(url: url)
+    request.httpMethod = "GET"
+    do {
+      let (data, _) = try await URLSession.shared.data(for: request)
+      let jsonData = try JSONDecoder().decode([UpbitSymbolInfo].self, from: data)
+      return .success(jsonData)
+    } catch {
+      return .failure(APIError.normal(error))
+    }
+  }
+  
   public func requestUpbitTickerPriceInfo(marketsSubPath: String) async -> Result<UpbitMarketTickerListResponse, APIError> {
     guard let url = URL(string: "\(upbitBaseURLString)/ticker?markets=\(marketsSubPath)") else {
       return .failure(APIError.normal(URLError(.badURL)))
