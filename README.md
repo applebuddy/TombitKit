@@ -6,7 +6,8 @@
 
 ## Description
 
-TombitKit is networking library for crypto currency informations written in Swift with Concurrency.
+- TombitKit is networking library for crypto currency trading informations written in Swift with Concurrency.
+- TombitKit makes it easier to use EndPoints or WebSocket APIs from Upbit and Binance crypto currency exchanges.
 
 <br>
 <br>

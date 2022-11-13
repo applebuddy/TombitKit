@@ -1,7 +1,7 @@
 import CryptoKit
 import Foundation
 
-final public class BinanceConnection {
+final public class BinanceAPIManager {
   public enum APIType {
     case market
     case future
@@ -9,9 +9,9 @@ final public class BinanceConnection {
     var baseURLString: String {
       switch self {
       case .market:
-        return BinanceConnection.marketEndPoint
+        return BinanceAPIManager.marketEndPoint
       case .future:
-        return BinanceConnection.futureEndPoint
+        return BinanceAPIManager.futureEndPoint
       }
     }
   }
@@ -77,7 +77,7 @@ final public class BinanceConnection {
     self.secretKey = ""
   }
   
-  private func performCall<T: Decodable>(
+  private func requestAPI<T: Decodable>(
     withPath path: String,
     queryString: String,
     timestamp: Bool,
@@ -111,7 +111,7 @@ final public class BinanceConnection {
   
   /// Market exchange information
   public func getMarketExchangeInfo() async -> Result<BinanceExchangeInfo, APIError> {
-    return await performCall(
+    return await requestAPI(
       withPath: "/api/v1/exchangeInfo",
       queryString: "",
       timestamp: false,
@@ -121,7 +121,7 @@ final public class BinanceConnection {
 
   /// Market asset list information
   public func getMarketAssetInfoList() async -> Result<MarketAssetInfoList, APIError> {
-    return await performCall(
+    return await requestAPI(
       withPath: "/sapi/v1/capital/config/getall",
       queryString: "",
       timestamp: true,
@@ -132,7 +132,7 @@ final public class BinanceConnection {
 
   /// Market price list information
   public func getMarketPriceInfoList() async -> Result<PriceTickerInfoList, APIError> {
-    return await performCall(
+    return await requestAPI(
       withPath: "/api/v3/ticker/price",
       queryString: "",
       timestamp: false,
@@ -143,7 +143,7 @@ final public class BinanceConnection {
 
   /// Future price list information
   public func getFuturePriceInfoList() async -> Result<PriceTickerInfoList, APIError> {
-    return await performCall(
+    return await requestAPI(
       withPath: "/fapi/v1/ticker/price",
       queryString: "",
       timestamp: false,
@@ -156,7 +156,7 @@ final public class BinanceConnection {
   
   /// Future exchange information
   public func getFutureExchangeInfo() async -> Result<BinanceExchangeInfo, APIError> {
-    return await performCall(
+    return await requestAPI(
       withPath: "/fapi/v1/exchangeInfo",
       queryString: "",
       timestamp: false,
@@ -167,7 +167,7 @@ final public class BinanceConnection {
 
   /// Future account information
   public func getFutureAccountInfo() async -> Result<FutureAccountInfo, APIError> {
-    return await performCall(
+    return await requestAPI(
       withPath: "/fapi/v2/account",
       queryString: "",
       timestamp: true,
