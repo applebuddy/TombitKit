@@ -96,9 +96,9 @@ final public class BinanceAPIManager {
 
     var urlRequest = URLRequest(url: url)
     urlRequest.addValue(apiKey, forHTTPHeaderField: "X-MBX-APIKEY")
-    
+
     do {
-      let (data, _) = try await URLSession.shared.data(from: url)
+      let (data, _) = try await URLSession.shared.data(for: urlRequest)
       let parsedData = try JSONDecoder().decode(T.self, from: data)
       return .success(parsedData)
     } catch {

@@ -46,20 +46,32 @@ extension TombitAPIManager {
     }
   }
   
-  public func requestBinanceAssetList(apiAccessKey: String, apiSecretKey: String) async -> BinanceAssetInfoTupleAPIDataResponse {
+  public func requestBinanceAssetList(apiAccessKey: String, apiSecretKey: String) async -> Result<BinanceAssetTupleInfoResponse, APIError> {
     binanceApiAccessKey = apiAccessKey
     binanceApiSecretKey = apiSecretKey
     debugPrint("\(apiAccessKey), \(apiSecretKey)")
     
     let connection = BinanceAPIManager(apiKey: apiAccessKey, secretKey: apiSecretKey)
-    var tupleResponse: BinanceAssetInfoTupleAPIDataResponse = (market: nil, future: nil)
     
     async let marketInfoResult = connection.getMarketAssetInfoList()
     async let futureInfoResult = connection.getFutureAccountInfo()
+    var assetTupleInfoResponse: BinanceAssetTupleInfoResponse = (nil, nil)
     
-    tupleResponse.market = APIDataResponse(await marketInfoResult)
-    tupleResponse.future = APIDataResponse(await futureInfoResult)
-    return tupleResponse
+    switch await marketInfoResult {
+    case .success(let marketInfo):
+      assetTupleInfoResponse.market = marketInfo
+    case .failure(let apiError):
+      return .failure(apiError)
+    }
+    
+    switch await futureInfoResult {
+    case .success(let futureInfo):
+      assetTupleInfoResponse.future = futureInfo
+    case .failure(let apiError):
+      return .failure(apiError)
+    }
+
+    return .success(assetTupleInfoResponse)
   }
   
   public func requestBinanceMarketPriceList() async -> Result<PriceTickerInfoList, APIError> {

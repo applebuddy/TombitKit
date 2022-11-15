@@ -1,11 +1,8 @@
 import Foundation
 
 // Binance Asset Info
-public typealias BinanceMarketAssetInfoResponse = MarketAssetInfoList
-public typealias BinanceFutureAssetInfoResponse = FutureAccountInfo
-public typealias BinanceMarketAssetInfoApiDataResponse = APIDataResponse<BinanceMarketAssetInfoResponse, APIError>
-public typealias BinanceFutureAssetInfoApiDataResponse = APIDataResponse<BinanceFutureAssetInfoResponse, APIError>
-public typealias BinanceAssetInfoTupleAPIDataResponse = (market: BinanceMarketAssetInfoApiDataResponse?, future: BinanceFutureAssetInfoApiDataResponse?)
+public typealias BinanceAssetTupleInfoResponse = (market: MarketAssetInfoList?, future: FutureAccountInfo?)
+
 // Binance Price Info
 public typealias BinancePriceTickerInfoResponse = PriceTickerInfoList
 public typealias BinancePriceTickerInfo = PriceTickerInfo
@@ -24,10 +21,10 @@ public struct BinancePriceInfoWrapper: Equatable {
 }
 
 public struct BinanceAssetInfoWrapper: Equatable {
-  public var marketInfo: BinanceMarketAssetInfoResponse?
-  public var futureInfo: BinanceFutureAssetInfoResponse?
+  public var marketInfo: MarketAssetInfoList?
+  public var futureInfo: FutureAccountInfo?
   
-  public init(marketInfo: BinanceMarketAssetInfoResponse?, futureInfo: BinanceFutureAssetInfoResponse?) {
+  public init(marketInfo: MarketAssetInfoList?, futureInfo: FutureAccountInfo?) {
     self.marketInfo = marketInfo
     self.futureInfo = futureInfo
   }
