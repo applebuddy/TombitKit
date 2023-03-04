@@ -11,43 +11,39 @@ import Foundation
 extension URLSession {
   /// dataTask method with async await for iOS 13.0+ version
   func data(from url: URL) async throws -> (Data, URLResponse) {
-    do {
-      return try await withCheckedThrowingContinuation { continuation in
-        dataTask(with: url) { data, response, error in
-          if let error = error {
-            continuation.resume(throwing: error)
-            return
-          }
-
-          guard let data = data, let response = response else {
-            continuation.resume(throwing: URLError(.badServerResponse))
-            return
-          }
-          continuation.resume(returning: (data, response))
+    try await withCheckedThrowingContinuation { continuation in
+      dataTask(with: url) { data, response, error in
+        if let error = error {
+          continuation.resume(throwing: error)
+          return
         }
-        .resume()
+        
+        guard let data = data, let response = response else {
+          continuation.resume(throwing: URLError(.badServerResponse))
+          return
+        }
+        continuation.resume(returning: (data, response))
       }
-    } catch { throw error }
+      .resume()
+    }
   }
 
   /// dataTask method with async await for iOS 13.0+ version
   func data(for request: URLRequest) async throws -> (Data, URLResponse) {
-    do {
-      return try await withCheckedThrowingContinuation { continuation in
-        dataTask(with: request) { data, response, error in
-          if let error = error {
-            continuation.resume(throwing: error)
-            return
-          }
-          
-          guard let data = data, let response = response else {
-            continuation.resume(throwing: URLError(.badServerResponse))
-            return
-          }
-          continuation.resume(returning: (data, response))
+    try await withCheckedThrowingContinuation { continuation in
+      dataTask(with: request) { data, response, error in
+        if let error = error {
+          continuation.resume(throwing: error)
+          return
         }
-        .resume()
+        
+        guard let data = data, let response = response else {
+          continuation.resume(throwing: URLError(.badServerResponse))
+          return
+        }
+        continuation.resume(returning: (data, response))
       }
-    } catch { throw error }
+      .resume()
+    }
   }
 }
